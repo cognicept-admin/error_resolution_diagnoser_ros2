@@ -16,7 +16,7 @@ BackendApi::BackendApi()
   this->check_environment();
 
   // File variables
-  this->log_dir = std::getenv("HOME");
+  this->log_dir = std::getenv("USERPROFILE");
   // Generate UUID
   boost::uuids::uuid uuid = boost::uuids::random_generator()();
   // Stream
@@ -220,7 +220,8 @@ pplx::task<void> BackendApi::post_event_log(json::value payload)
            config.set_validate_certificates(false);
 
            // Create HTTP client
-           http_client client(this->agent_post_api, config);
+           std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+           http_client client(converter.from_bytes(this->agent_post_api), config);
 
            // // Write the current JSON value to a stream with the native platform character width
            // utility::stringstream_t stream;
@@ -234,11 +235,11 @@ pplx::task<void> BackendApi::post_event_log(json::value payload)
            // req.headers().add("Authorization", this->headers);
            if (this->agent_post_api == "https://postman-echo.com")
            {
-             req.set_request_uri("/post");
+             req.set_request_uri(L"/post");
            }
            else
            {
-             req.set_request_uri("/api/agentstream/putRecord");
+             req.set_request_uri(L"/api/agentstream/putRecord");
            }
            req.set_body(payload);
 
@@ -333,7 +334,7 @@ void BackendApi::push_status(bool status, json::value telemetry)
     std::cout << "Status Logged: " << message << std::endl;
 
     // Write to file
-    std::ofstream outfile;
+    std::wofstream outfile;
     std::string filename = this->log_name + "Status" + this->log_ext;
     // std::cout << filename << std::endl;
     outfile.open(filename);
@@ -351,7 +352,7 @@ void BackendApi::push_status(bool status, json::value telemetry)
     std::cout << "Status Logged: " << message << std::endl;
 
     // Write to file
-    std::ofstream outfile;
+    std::wofstream outfile;
     std::string filename = this->log_name + "Status" + this->log_ext;
     // std::cout << filename << std::endl;
     outfile.open(filename);
@@ -455,7 +456,7 @@ void BackendApi::push_event_log(std::vector<std::vector<std::string>> log)
     std::cout << level << " level event logged with id: " << event_id << std::endl;
 
     // Write to file
-    std::ofstream outfile;
+    std::wofstream outfile;
     this->log_id++;
     std::string filename = this->log_name + std::to_string(this->log_id) + this->log_ext;
     std::cout << filename << std::endl;
@@ -474,7 +475,7 @@ void BackendApi::push_event_log(std::vector<std::vector<std::string>> log)
     std::cout << level << " level event logged with id: " << event_id << std::endl;
 
     // Write to file
-    std::ofstream outfile;
+    std::wofstream outfile;
     this->log_id++;
     std::string filename = this->log_name + std::to_string(this->log_id) + this->log_ext;
     std::cout << filename << std::endl;
@@ -557,15 +558,16 @@ pplx::task<void> BackendApi::query_error_classification(std::string msg_text)
            config.set_validate_certificates(false);
 
            // Create HTTP client
-           http_client client(this->ecs_api_host, config);
+           std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+           http_client client(converter.from_bytes(this->ecs_api_host), config);
 
            // Build request
            http_request req(methods::GET);
 
            // Build request URI.
-           uri_builder builder(this->ecs_api_endpoint);
-           builder.append_query("RobotModel", this->ecs_robot_model);
-           builder.append_query("ErrorText", msg_text);
+           uri_builder builder(converter.from_bytes(this->ecs_api_endpoint));
+           builder.append_query(L"RobotModel", converter.from_bytes(this->ecs_robot_model));
+           builder.append_query(L"ErrorText", converter.from_bytes(msg_text));
            req.set_request_uri(builder.to_string());
 
            return client.request(req);
@@ -575,8 +577,10 @@ pplx::task<void> BackendApi::query_error_classification(std::string msg_text)
         if (response.status_code() == status_codes::OK)
         {
           auto body = response.extract_string();
-          std::string body_str = body.get().c_str();
-          this->msg_resp = body_str;
+          std::wstring body_str = body.get().c_str();
+          // std::wcout << body_str << std::endl;
+          std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+          this->msg_resp = converter.to_bytes(body_str);
         }
         // If not, request failed
         else
@@ -590,12 +594,12 @@ json::value BackendApi::check_error_classification(std::string msg_text)
 {
   json::value response = json::value::null();
   json::value response_data = json::value::null();
-
+  std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
   try
   {
     this->query_error_classification(msg_text).wait();
     std::string temp_msg = this->msg_resp;
-    response = json::value::parse(temp_msg);
+    response = json::value::parse(converter.from_bytes(temp_msg));
   }
   catch (const http::http_exception &e)
   {

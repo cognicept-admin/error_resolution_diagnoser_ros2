@@ -34,12 +34,15 @@ std::string telemetry = "{ \"pose\" : 42 }";
 // Hold the record
 std::vector<std::string> event_details;
 
+// Converter for wstring <> string
+std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 // Utility functions
 void setLogFolder()
 {
   // Set log folder
   std::ifstream inFile;
-  std::string home_var = std::getenv("HOME");
+  std::string home_var = std::getenv("USERPROFILE");
   std::string latest_log = home_var + "/.cognicept/agent/logs/latest_log_loc.txt";
   inFile.open(latest_log);
   if (!inFile)
@@ -100,17 +103,17 @@ TEST(BackEndApiTestSuite, jsonTest)
   // Check if it has the right fields according to schema
   bool fieldFlag = true;
   // List all field names
-  std::vector<std::string> fieldNames;
-  fieldNames.push_back("Compounding");
-  fieldNames.push_back("Date/Time");
-  fieldNames.push_back("Description");
-  fieldNames.push_back("Level");
-  fieldNames.push_back("Message");
-  fieldNames.push_back("Module");
-  fieldNames.push_back("QID");
-  fieldNames.push_back("Resolution");
-  fieldNames.push_back("RobotEvent_ID");
-  fieldNames.push_back("Source");
+  std::vector<std::wstring> fieldNames;
+  fieldNames.push_back(L"Compounding");
+  fieldNames.push_back(L"Date/Time");
+  fieldNames.push_back(L"Description");
+  fieldNames.push_back(L"Level");
+  fieldNames.push_back(L"Message");
+  fieldNames.push_back(L"Module");
+  fieldNames.push_back(L"QID");
+  fieldNames.push_back(L"Resolution");
+  fieldNames.push_back(L"RobotEvent_ID");
+  fieldNames.push_back(L"Source");
 
   // Loop through field names to see if they exist with the correct data type
   for (unsigned int idx = 0; idx < fieldNames.size(); idx++)
@@ -127,7 +130,7 @@ TEST(BackEndApiTestSuite, jsonTest)
 TEST(BackEndApiTestSuite, statusTrueTest)
 {
   // Push status
-  api_instance.push_status(true, json::value::string(telemetry));
+  api_instance.push_status(true, json::value::string(converter.from_bytes(telemetry)));
 
   // Get log file
   std::string filename = log_name + "Status" + log_ext;
@@ -147,7 +150,7 @@ TEST(BackEndApiTestSuite, statusTrueTest)
   while (getline(infile, status_line))
   {
     // Output the text from the file
-    stream << status_line;
+    stream << converter.from_bytes(status_line);
   }
 
   // Parse JSON string
@@ -155,11 +158,11 @@ TEST(BackEndApiTestSuite, statusTrueTest)
 
   // Create key and get value
   utility::string_t msgKey(utility::conversions::to_string_t("message"));
-  std::string message_value;
+  std::wstring message_value;
   message_value = status_log[msgKey].as_string();
 
   // Check if message is correct
-  ASSERT_EQ(message_value, "Online");
+  ASSERT_EQ(message_value, L"Online");
 
   // Close file
   infile.close();
@@ -168,7 +171,7 @@ TEST(BackEndApiTestSuite, statusTrueTest)
 TEST(BackEndApiTestSuite, statusFalseTest)
 {
   // Push status
-  api_instance.push_status(false, json::value::string(telemetry));
+  api_instance.push_status(false, json::value::string(converter.from_bytes(telemetry)));
 
   // Get log file
   std::string filename = log_name + "Status" + log_ext;
@@ -188,7 +191,7 @@ TEST(BackEndApiTestSuite, statusFalseTest)
   while (getline(infile, status_line))
   {
     // Output the text from the file
-    stream << status_line;
+    stream << converter.from_bytes(status_line);
   }
 
   // Parse JSON string
@@ -196,11 +199,11 @@ TEST(BackEndApiTestSuite, statusFalseTest)
 
   // Create key and get value
   utility::string_t msgKey(utility::conversions::to_string_t("message"));
-  std::string message_value;
+  std::wstring message_value;
   message_value = status_log[msgKey].as_string();
 
   // Check if message is correct
-  ASSERT_EQ(message_value, "Offline");
+  ASSERT_EQ(message_value, L"Offline");
 
   // Close file
   infile.close();

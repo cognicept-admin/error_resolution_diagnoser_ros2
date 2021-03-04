@@ -74,7 +74,9 @@ void StateManager::check_message_ecs(std::string robot_code, const rcl_interface
 
         int error_level = (msg_info.at(utility::conversions::to_string_t("severity"))).as_integer();
         // std::cout << "Level: " << error_level << std::endl;
-        std::string error_msg = (msg_info.at(utility::conversions::to_string_t("error_text"))).as_string();
+        std::wstring error_msgw = (msg_info.at(utility::conversions::to_string_t("error_text"))).as_string();
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::string error_msg = converter.to_bytes(error_msgw);
         // std::cout << "Text: " << error_msg << std::endl;
 
         if ((error_level == 8) || (error_level == 16))
@@ -163,7 +165,9 @@ void StateManager::check_message_ert(std::string robot_code, const rcl_interface
 
         int error_level = (msg_info.at(utility::conversions::to_string_t("error_level"))).as_integer();
         // std::cout << "Level: " << error_level << std::endl;
-        std::string error_msg = (msg_info.at(utility::conversions::to_string_t("error_text"))).as_string();
+        std::wstring error_msgw = (msg_info.at(utility::conversions::to_string_t("error_text"))).as_string();
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::string error_msg = converter.to_bytes(error_msgw);
         // std::cout << "Text: " << error_msg << std::endl;
 
         if (error_level == 8)

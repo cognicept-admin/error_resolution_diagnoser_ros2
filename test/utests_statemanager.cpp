@@ -21,7 +21,7 @@ std::string infoMessage = "Received a goal, begin following path";
 std::string infoEndMessage = "Goal reached";
 
 // Sample telemetry
-json::value telemetry = json::value::parse("{ \"pose\" : 42 }");
+json::value telemetry = json::value::parse(L"{ \"pose\" : 42 }");
 
 // Sample log
 std::vector<std::string> found;
@@ -31,7 +31,7 @@ void setLogFolder()
 {
   // Set log folder
   std::ifstream inFile;
-  std::string home_var = std::getenv("HOME");
+  std::string home_var = std::getenv("USERPROFILE");
   std::string latest_log = home_var + "/.cognicept/agent/logs/latest_log_loc.txt";
   inFile.open(latest_log);
   if (!inFile)

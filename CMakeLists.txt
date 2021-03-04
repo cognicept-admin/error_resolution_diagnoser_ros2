@@ -37,6 +37,7 @@ target_link_libraries(
   error_resolution_diagnoser_ros2_lib
   cpprestsdk::cpprest
   ${Boost_LIBRARIES}
+  bcrypt
 )
 
 ament_target_dependencies(error_resolution_diagnoser_ros2_lib rclcpp rcl_interfaces ament_index_cpp nav_msgs geometry_msgs)
@@ -46,6 +47,7 @@ target_link_libraries(
   error_resolution_diagnoser_ros2
   cpprestsdk::cpprest
   ${Boost_LIBRARIES}
+  bcrypt
 )
 
 ament_target_dependencies(error_resolution_diagnoser_ros2 rclcpp rcl_interfaces ament_index_cpp nav_msgs geometry_msgs)
@@ -82,16 +84,16 @@ if(BUILD_TESTING)
   ament_add_gtest(robotevent_test_node test/utests_robotevent.cpp)
   ament_add_gtest(statemanager_test_node test/utests_statemanager.cpp)
   add_launch_test(test/listener_integration_launch_ros_test.py)
-  #add_launch_test(test/listener_integration_launch_db_test.py)
+  # add_launch_test(test/listener_integration_launch_db_test.py)
   add_launch_test(test/listener_integration_launch_telemetry_test.py)
   
   ament_target_dependencies(backend_test_node rclcpp rcl_interfaces ament_index_cpp nav_msgs geometry_msgs)
   ament_target_dependencies(robotevent_test_node rclcpp rcl_interfaces ament_index_cpp nav_msgs geometry_msgs)
   ament_target_dependencies(statemanager_test_node rclcpp rcl_interfaces ament_index_cpp nav_msgs geometry_msgs)
   
-  target_link_libraries(backend_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES})
-  target_link_libraries(robotevent_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES})
-  target_link_libraries(statemanager_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES})
+  target_link_libraries(backend_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES} bcrypt)
+  target_link_libraries(robotevent_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES} bcrypt)
+  target_link_libraries(statemanager_test_node error_resolution_diagnoser_ros2_lib cpprestsdk::cpprest ${Boost_LIBRARIES} bcrypt)
 endif()
 
 ament_package()

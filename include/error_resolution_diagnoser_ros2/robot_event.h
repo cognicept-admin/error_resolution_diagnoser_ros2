@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <cpprest/json.h>
 #undef U
 #include <string>
@@ -7,6 +8,8 @@
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 #include <boost/date_time.hpp>
 #include <rcl_interfaces/msg/log.hpp>
+#include <locale>
+#include <codecvt>
 
 class RobotEvent
 {

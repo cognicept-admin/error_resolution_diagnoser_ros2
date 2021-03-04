@@ -16,6 +16,8 @@ import rcl_interfaces.msg
 
 LOGID = 0
 os.environ['AGENT_TYPE'] = 'DB'
+os.environ['ECS_API'] = 'http://localhost:8000'
+os.environ['ECS_ROBOT_MODEL'] = 'ROS2_Turtlebot3'
 os.environ['AGENT_MODE'] = 'JSON_TEST'
 
 def generate_test_description(ready_fn):
@@ -135,8 +137,8 @@ class ListenerTest(unittest.TestCase):
         msg.msg = "Sample message to establish plumbing?"
         msg.level = 40
         
-        # Publish a sample message to establish plumbing for the first time (only for Dashing)
-        if(os.environ['ROS_DISTRO'] == 'dashing'):
+        # Publish a sample message to establish plumbing for the first time (not for Eloquent for some reason)
+        if(os.environ['ROS_DISTRO'] != 'eloquent'):
             pub.publish(msg)
         
         # Test message list

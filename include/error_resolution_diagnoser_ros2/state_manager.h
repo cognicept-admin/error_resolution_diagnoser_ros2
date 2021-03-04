@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <cpprest/json.h>
 #undef U
 #include <string>
@@ -8,6 +9,8 @@
 #include <rcl_interfaces/msg/log.hpp>
 #include <error_resolution_diagnoser_ros2/backend_api.h>
 #include <error_resolution_diagnoser_ros2/robot_event.h>
+#include <locale>
+#include <codecvt>
 
 class StateManager
 {

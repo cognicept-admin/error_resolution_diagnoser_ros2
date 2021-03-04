@@ -10,17 +10,20 @@ RobotEvent event_instance;
 
 // Create sample log
 std::vector<std::vector<std::string>> sample_log;
-std::string level = "40";
-std::string cflag = "Null";
-std::string module = "Null";
-std::string source = "bt_navigator";
-std::string message = "Navigation failed";
-std::string description = "Null";
-std::string resolution = "Null";
-std::string telemetry_str = "{ \"pose\" : 42 }";
+std::wstring level = L"40";
+std::wstring cflag = L"Null";
+std::wstring module = L"Null";
+std::wstring source = L"bt_navigator";
+std::wstring message = L"Navigation failed";
+std::wstring description = L"Null";
+std::wstring resolution = L"Null";
+std::wstring telemetry_str = L"{ \"pose\" : 42 }";
 
 // Hold the record
 std::vector<std::string> event_details;
+
+// Converter for wstring <> string
+std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 // Test cases
 TEST(RobotEventTestSuite, getLogTest)
@@ -28,8 +31,8 @@ TEST(RobotEventTestSuite, getLogTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For simple get test, no need for ECS, telemetry info
@@ -64,8 +67,8 @@ TEST(RobotEventTestSuite, updateLogROSTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For ROS test, no need for ECS
@@ -83,15 +86,15 @@ TEST(RobotEventTestSuite, updateLogROSTest)
 
   // Expected log
   // For ROS, cflag is Null
-  cflag = "Null";
-  event_details.push_back(level);
-  event_details.push_back(cflag);
-  event_details.push_back(module);
-  event_details.push_back(source);
-  event_details.push_back(message);
-  event_details.push_back(description);
-  event_details.push_back(resolution);
-  event_details.push_back(telemetry_str);
+  cflag = L"Null";
+  event_details.push_back(converter.to_bytes(level));
+  event_details.push_back(converter.to_bytes(cflag));
+  event_details.push_back(converter.to_bytes(module));
+  event_details.push_back(converter.to_bytes(source));
+  event_details.push_back(converter.to_bytes(message));
+  event_details.push_back(converter.to_bytes(description));
+  event_details.push_back(converter.to_bytes(resolution));
+  event_details.push_back(converter.to_bytes(telemetry_str));
 
   // Get log
   updatedLog = event_instance.get_log();
@@ -115,22 +118,22 @@ TEST(RobotEventTestSuite, updateLogDBTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For DB test, need for ECS, manually construct an ECS response so we don't rely on ECS connection
   json::value msgInfo = json::value::object();
   // For DB, cflag is NOT Null
-  cflag = "true";
+  cflag = L"true";
   event_details.push_back(std::to_string(8));
-  event_details.push_back(cflag);
+  event_details.push_back(converter.to_bytes(cflag));
   event_details.push_back("Navigation");
-  event_details.push_back(source);
-  event_details.push_back(message);
+  event_details.push_back(converter.to_bytes(source));
+  event_details.push_back(converter.to_bytes(message));
   event_details.push_back("The robot is unable to move around. This usually means the robot is mislocalized or there is an obstacle.");
   event_details.push_back("Relocalize the robot using intervention, assign a sample goal. If that does not work, use teleoperation to nudge the robot from the impossible position. If that does not work, escalate to property.");
-  event_details.push_back(telemetry_str);
+  event_details.push_back(converter.to_bytes(telemetry_str));
 
   // Declare log variable
   std::vector<std::vector<std::string>> updatedLog;
@@ -147,14 +150,14 @@ TEST(RobotEventTestSuite, updateLogDBTest)
   utility::string_t resKey(utility::conversions::to_string_t("error_resolution"));
 
   // Assign key-value
-  msgInfo[codeKey] = json::value::string("Null");
+  msgInfo[codeKey] = json::value::string(L"Null");
   msgInfo[lvlKey] = json::value::number(8);
   msgInfo[cfKey] = json::value::boolean(true);
-  msgInfo[modKey] = json::value::string("Navigation");
-  msgInfo[srcKey] = json::value::string("bt_navigator");
+  msgInfo[modKey] = json::value::string(L"Navigation");
+  msgInfo[srcKey] = json::value::string(L"bt_navigator");
   msgInfo[txtKey] = json::value::string(message);
-  msgInfo[descKey] = json::value::string("The robot is unable to move around. This usually means the robot is mislocalized or there is an obstacle.");
-  msgInfo[resKey] = json::value::string("Relocalize the robot using intervention, assign a sample goal. If that does not work, use teleoperation to nudge the robot from the impossible position. If that does not work, escalate to property.");
+  msgInfo[descKey] = json::value::string(L"The robot is unable to move around. This usually means the robot is mislocalized or there is an obstacle.");
+  msgInfo[resKey] = json::value::string(L"Relocalize the robot using intervention, assign a sample goal. If that does not work, use teleoperation to nudge the robot from the impossible position. If that does not work, escalate to property.");
 
   // For testing, telemetry is set to a constant
   json::value telemetry = json::value::string(telemetry_str);
@@ -184,22 +187,22 @@ TEST(RobotEventTestSuite, updateLogECSTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For DB test, need for ECS, manually construct an ECS response so we don't rely on ECS connection
   json::value msgInfo = json::value::object();
   // For DB, cflag is NOT Null
-  cflag = "false";
+  cflag = L"false";
   event_details.push_back(std::to_string(16));
-  event_details.push_back(cflag);
+  event_details.push_back(converter.to_bytes(cflag));
   event_details.push_back("Navigation");
-  event_details.push_back(source);
-  event_details.push_back(message);
-  event_details.push_back(message);
+  event_details.push_back(converter.to_bytes(source));
+  event_details.push_back(converter.to_bytes(message));
+  event_details.push_back(converter.to_bytes(message));
   event_details.push_back("Null");
-  event_details.push_back(telemetry_str);
+  event_details.push_back(converter.to_bytes(telemetry_str));
 
   // Declare log variable
   std::vector<std::vector<std::string>> updatedLog;
@@ -214,11 +217,11 @@ TEST(RobotEventTestSuite, updateLogECSTest)
   utility::string_t txtKey(utility::conversions::to_string_t("error_text"));
 
   // Assign key-value
-  msgInfo[codeKey] = json::value::string("NAV-SW-16-R-1");
+  msgInfo[codeKey] = json::value::string(L"NAV-SW-16-R-1");
   msgInfo[lvlKey] = json::value::number(16);
   msgInfo[cfKey] = json::value::boolean(false);
-  msgInfo[modKey] = json::value::string("Navigation");
-  msgInfo[srcKey] = json::value::string("bt_navigator");
+  msgInfo[modKey] = json::value::string(L"Navigation");
+  msgInfo[srcKey] = json::value::string(L"bt_navigator");
   msgInfo[txtKey] = json::value::string(message);
   
   // For testing, telemetry is set to a constant
@@ -248,8 +251,8 @@ TEST(RobotEventTestSuite, updateEventIdTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For simple get test, no need for ECS
@@ -309,8 +312,8 @@ TEST(RobotEventTestSuite, clearTest)
   // Sample message
   rcl_interfaces::msg::Log data;
   data.level = data.ERROR;
-  data.name = source;
-  data.msg = message;
+  data.name = converter.to_bytes(source);
+  data.msg = converter.to_bytes(message);
   rcl_interfaces::msg::Log::SharedPtr rosmsg(new rcl_interfaces::msg::Log(data));
 
   // For simple get test, no need for ECS

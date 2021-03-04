@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <rclcpp/rclcpp.hpp>
 #include <rcl_interfaces/msg/log.hpp>
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
@@ -5,6 +6,7 @@
 #include <iostream>
 #include <error_resolution_diagnoser_ros2/state_manager.h>
 #include <chrono>
+#include <boost/algorithm/string.hpp>
 
 class cs_listener : public rclcpp::Node
 {
