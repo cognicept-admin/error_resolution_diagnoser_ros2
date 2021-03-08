@@ -2,6 +2,13 @@
 
 [![Build Status](https://jenkins.cognicept.systems/buildStatus/icon?job=cognicept-ros2-agent-pipeline)](https://jenkins.cognicept.systems/job/cognicept-ros2-agent-pipeline/)  [![Coverage Status](http://34.87.159.179:5000/coverage/cognicept-ros2-agent-pipeline)](http://34.87.159.179:5000/coverage/cognicept-ros2-agent-pipeline)
 
+**--------Disclaimer Start--------**
+
+This particular branch has specific instructions and source code ported for Windows OS. If you are planning on using this on Linux, please switch to the `master` or `develop` branches. Thanks for checking this project out!
+
+**--------Disclaimer End--------**
+
+
 Hello there! Thanks for checking out the documentation. This particular document is a user's guide. If you are more interested in what the `error_resolution_diagnoser_ros2` is designed for, and the architecture, please take a look at the introduction document [here][7]!
 
 This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [info@cognicept.systems](mailto:info@cognicept.systems). If you are interested in contributing, please refer to the guidelines [here](CONTRIBUTING.md).  
@@ -52,32 +59,26 @@ You can get access to the agent by cloning this repo. After this, there are a co
 
 You can use this approach if you are planning on running this on a system that has a working ROS 2 installation. Steps are as follows:
 
-1. Install Microsoft's [`C++ REST SDK`][5] for establishing the backend api for incident management using `apt-get`:
-
-        $ sudo apt-get install libcpprest-dev
+1. Install Microsoft's [`C++ REST SDK`][6] for establishing the backend api. For Windows OS, the latest version of this package at the time of the development of this project had some issues with respect to how platform dependent strings are handled. So instead of using this version, we need to use a public fork of the project where this issue has been addressed. To keep this document clean, please refer to [`CPPRESTSDK_INSTALL.md`](CPPRESTSDK_INSTALL.md) to see how to do the installation for the dependency and come back here!
     
-2. Install ROS 2's launch testing framework if it is not installed already using `apt-get`. Here `< ROSDISTRO >` stands for your ROS 2 distribution such as `dashing` or `eloquent`:
-    
-        $ sudo apt-get install ros-< ROSDISTRO >-launch-testing*
-    
-3. Change to your `ros2_ws` folder:
+2. Change to your `ros2_ws` folder:
 
         $ cd ..
      
-4. Issue `colcon build` to build the ROS node :
+3. Issue `colcon build` to build the ROS node :
 
         $ colcon build --symlink-install
     
-5. Source the changes by running the `setup.bash` file:
+4. Source the changes by running the `setup.bash` file:
 
         $ source ~/ros2_ws/install/setup.bash
     
-6. Check if node has built correctly and registered using `ros2 pkg`:
+5. Check if node has built correctly and registered using `ros2 pkg`:
 
         $ ros2 pkg list | grep error_resolution_diagnoser_ros2
         error_resolution_diagnoser_ros2
 
-7. Additionally, follow the appropriate installation steps for installing the `ECS API Server` [here][8].
+6. Additionally, follow the appropriate installation steps for installing the `error_classification_server` [here][8].
     
 That is it for the native installation! You can now jump to [Running tests](#running-tests) or [Syntax](#syntax).
 
