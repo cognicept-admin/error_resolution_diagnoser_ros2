@@ -43,7 +43,7 @@ Some knowledge of ROS 2 and robotics is necessary.
 
 ## Installation
 
-You can get access to the agent by cloning this repo. After this, there are a couple of choices as to how you want to build and run the agent ROS node. Either natively, or using Docker. Steps are as follows:
+You can get access to the agent by cloning this repo. On Windows, Docker support has not been developed/tested. So building and running the node is only supported natively. Steps are as follows:
 
 1. Open a terminal window.
 
@@ -86,9 +86,9 @@ That is it for the native installation! You can now jump to [Running tests](#run
 TBD for Windows. If there is an immediate need for this, please create an issue!
 
 ## Running tests
-Optionally, you can run the unit and integration tests natively or using Docker, based on the installation method you chose in the previous section.
+Optionally, you can run the unit and integration tests natively. For Windows, Docker support for running tests does not exist yet. 
 
-**NOTE: Before running tests, makes sure the `error_classification_server` is running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in some failed tests that require connection to ECS.**
+**NOTE: Before running tests, makes sure the `error_classification_server` is running natively. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in some failed tests that require connection to ECS.**
 
 ### Native
 
@@ -144,7 +144,7 @@ The agent can be configured using the following environment variables:
 | `ECS_ROBOT_MODEL` | Valid Robot Model          | Not applicable | If the `AGENT_TYPE` is set to `DB`, this variable MUST be configured to a valid robot model. If not specified, the agent will default back to `ROS` mode. For ROS 2 navigation stack, just use `ROS2_Turtlebot3`.                                                                                                                                                                                                                                                                                             |
 
 
-**NOTE: To run the agent in the `DB` mode, `error_classification_server` should be running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in the agent not able to find a valid API endpoint and result in an error thrown.**
+**NOTE: To run the agent in the `DB` mode, `error_classification_server` should be running natively. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in the agent not able to find a valid API endpoint and result in an error thrown.**
 
 Based on the type of installation, you can configure these variables by different methods as follows.
 
@@ -209,16 +209,7 @@ Simply launch the agent ROS 2 node using the launch file:
     $ ros2 launch error_resolution_diagnoser_ros2 error_resolution_diagnoser_ros2_launch.py
 
 **Running using Docker**
-
-Run the following `docker run` command:
-
-    $ docker run -it \
-    --env-file runtime.env \
-    --network=host \
-    --name=agent  \
-    --volume="${HOME}/.cognicept/agent/logs:/root/.cognicept/agent/logs" \
-    error_resolution_diagnoser_ros2:latest  \
-    ros2 launch error_resolution_diagnoser_ros2 error_resolution_diagnoser_ros2_launch.py
+TBD for Windows.
 
  Apart from a few small differences, the agent prompts would look similar for both the types of launches. Sample is shown below:
 
