@@ -83,23 +83,12 @@ You can use this approach if you are planning on running this on a system that h
 That is it for the native installation! You can now jump to [Running tests](#running-tests) or [Syntax](#syntax).
 
 ### Building through Docker:
-
-You can use this approach if you are planning on running the agent on a system that does not have ROS but will be connected to the same ROS network. 
-
-1. First, make sure you have a working [Docker installation][6].
-
-2. You can then build the `docker` image using `docker build` and the provided `Dockerfile`:
-
-        $ docker build -t error_resolution_diagnoser_ros2 .
-
-3. Additionally, follow the appropriate installation steps for installing the `ECS API Server` [here][8].
-    
-That is it for the Docker installation! You can now jump to [Running tests](#running-tests) or [Syntax](#syntax).
+TBD for Windows. If there is an immediate need for this, please create an issue!
 
 ## Running tests
 Optionally, you can run the unit and integration tests natively or using Docker, based on the installation method you chose in the previous section.
 
-**NOTE: Before running tests, makes sure the `ECS API Server` is running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in some failed tests that require connection to ECS.**
+**NOTE: Before running tests, makes sure the `error_classification_server` is running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in some failed tests that require connection to ECS.**
 
 ### Native
 
@@ -138,46 +127,7 @@ Optionally, you can run the unit and integration tests natively or using Docker,
     
 
 ### Using Docker
-
-1. Make sure that you have built the docker image by following the steps [here](#building-through-docker).
-
-2. Switch to the repository's folder or wherever you might be storing the `runtime.env` file.
-
-        $ cd ~/ros2_ws/src/error_resolution_diagnoser_ros2
-    
-3. You can run the tests by using the following `docker run` command. This will run the `buildntest.bash` script to run the tests and pull the results. Logs will be created in the `/$HOME/.cognicept/agent/logs` folder:
-
-        $ docker run -it \
-        --env-file runtime.env \
-        --network=host \
-        --name=agent  \
-        --volume="${HOME}/.cognicept/agent/logs:/root/.cognicept/agent/logs" \
-        error_resolution_diagnoser_ros2:latest  \
-        /home/ros2_ws/src/error_resolution_diagnoser_ros2/buildntest.bash
-        
-        STEP 1: Building agent code...
-        Starting >>> error_resolution_diagnoser_ros2
-        Finished <<< error_resolution_diagnoser_ros2 [0.38s]                       
-
-        Summary: 1 package finished [0.55s]
-        /home/ros2_ws/src/error_resolution_diagnoser_ros2/buildntest.bash: line 4: /root/ros2_ws/install/setup.bash: No such file or directory
-        STEP 2: Testing agent code...
-        Starting >>> error_resolution_diagnoser_ros2
-        [Processing: error_resolution_diagnoser_ros2]                   
-        Finished <<< error_resolution_diagnoser_ros2 [36.8s]            
-
-        Summary: 1 package finished [37.0s]
-        STEP 3: Getting failures...
-        Summary: 32 tests, 0 errors, 0 failures, 0 skipped
-        STEP 4: Getting all test results...
-        build/error_resolution_diagnoser_ros2/Testing/20200708-0630/Test.xml: 5 tests, 0 errors, 0 failures, 0 skipped
-        build/error_resolution_diagnoser_ros2/test_results/error_resolution_diagnoser_ros2/backend_test_node.gtest.xml: 6 tests, 0 errors, 0 failures, 0 skipped
-        build/error_resolution_diagnoser_ros2/test_results/error_resolution_diagnoser_ros2/robotevent_test_node.gtest.xml: 5 tests, 0 errors, 0 failures, 0 skipped
-        build/error_resolution_diagnoser_ros2/test_results/error_resolution_diagnoser_ros2/statemanager_test_node.gtest.xml: 8 tests, 0 errors, 0 failures, 0 skipped
-        build/error_resolution_diagnoser_ros2/test_results/error_resolution_diagnoser_ros2/test_listener_integration_launch_db_test.py.xunit.xml: 5 tests, 0 errors, 0 failures, 0 skipped
-        build/error_resolution_diagnoser_ros2/test_results/error_resolution_diagnoser_ros2/test_listener_integration_launch_ros_test.py.xunit.xml: 3 tests, 0 errors, 0 failures, 0 skipped
-
-        Summary: 32 tests, 0 errors, 0 failures, 0 skipped
+TBD for Windows.
     
 ## Syntax
 The agent can be configured using the following environment variables:
@@ -194,7 +144,7 @@ The agent can be configured using the following environment variables:
 | `ECS_ROBOT_MODEL` | Valid Robot Model          | Not applicable | If the `AGENT_TYPE` is set to `DB`, this variable MUST be configured to a valid robot model. If not specified, the agent will default back to `ROS` mode. For ROS 2 navigation stack, just use `ROS2_Turtlebot3`.                                                                                                                                                                                                                                                                                             |
 
 
-**NOTE: To run the agent in the `DB` mode, `ECS API Server` should be running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in the agent not able to find a valid API endpoint and result in an error thrown.**
+**NOTE: To run the agent in the `DB` mode, `error_classification_server` should be running either natively or using Docker. Take a look at the relevant documentation [here][9]. Failure to have the API server will result in the agent not able to find a valid API endpoint and result in an error thrown.**
 
 Based on the type of installation, you can configure these variables by different methods as follows.
 
@@ -217,15 +167,7 @@ Now, you can run the listener agent using the provided launch file and `ros2 lau
 **This is just a syntax. We will be using this listener agent to connect to a simulation to listen to errors in the next section!**
 
 ### Configure and Run for Docker
-In case of a Docker installation, you can simply use the [`runtime.env`](runtime.env) file in this repository as an example template and pass it to the docker container with the `--env-file` argument when using the `docker run` command. Simply edit the `runtime.env` like a text file, or comment the unnecessary variables and then rerun the container. Example below:
-
-    $ docker run -it \
-    --env-file runtime.env \
-    --network=host \
-    --name=agent  \
-    --volume="${HOME}/.cognicept/agent/logs:/root/.cognicept/agent/logs" \
-    error_resolution_diagnoser_ros2:latest  \
-    ros2 launch error_resolution_diagnoser_ros2 error_resolution_diagnoser_ros2_launch.py
+TBD for Windows.
 
 **NOTE: This is just a syntax. We will be using this listener agent to connect to a simulation to listen to errors in the next section!**
 
